@@ -7,7 +7,8 @@ public class FPSCamera : MonoBehaviour {
     float deltaX; // 마우스 이동값을 누적시킬 변수
     float deltaY;
     public ParticleSystem hitEffect;    // 피격 이펙트 
-    public ParticleSystem explosion;    // 폭발 이펙트
+   
+    public AudioClip rifleSound; // 총 발사 사운드
 
 	// Use this for initialization
 	void Start () {
@@ -48,17 +49,17 @@ public class FPSCamera : MonoBehaviour {
             // 만약, 맞은애가 드론이면, 
             if(hitInfo.transform.tag == "Drone")
             {
-                // 1. 삭제하고, 2. 폭발 이펙트를 표시한다. 
-                Destroy(hitInfo.transform.gameObject);
-                explosion.transform.position = hitInfo.point;
-                explosion.Stop();
-                explosion.Play();
+                // 드론에게 데미지를 준다. 
+                Drone dr = hitInfo.transform.gameObject.GetComponent<Drone>();
+                dr.OnDamage();                
             }
 
             // 맞았다면, 그곳에 이펙트를 이동한다.
             hitEffect.transform.position = hitInfo.point;
             hitEffect.Stop();
             hitEffect.Play();
+
+            AudioSource.PlayClipAtPoint(rifleSound, hitInfo.point);
         }        
     }
 }
